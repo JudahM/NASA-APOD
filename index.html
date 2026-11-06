@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA APOD - Foto do Dia</title>
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+
+
+<body>
+    <header class="app-header">
+        <!-- Ícone representativo do logo -->
+        <i class="icon-planet" aria-hidden="true"></i>
+        <hgroup class="brand-titles">
+            <h1>NASA APOD</h1>
+            <p>Foto do Dia</p>
+        </hgroup>
+    </header>
+
+
+    <main class="app-content">
+        
+        <section class="hero-section">
+            <h2>Um universo de clareza.</h2>
+            <p>Explore a Foto Astronômica do Dia da NASA e descubra novas perspectivas do cosmos.</p>
+        </section>
+
+        <section class="search-section">
+            <form id="date-search-form" role="search">
+                <fieldset class="search-fieldset">
+                    <legend>Selecionar data</legend>
+                    
+                    <i class="icon-calendar" aria-hidden="true"></i>
+                    <input type="date" name="apod-date" value="2023-01-01" required aria-label="Data da foto">
+                    
+                    <button type="submit" class="btn-search">
+                        <i class="icon-search" aria-hidden="true"></i> 
+                        Buscar
+                    </button>
+                    
+                    <small class="helper-text">De 1995-06-16 até hoje.</small>
+                </fieldset>
+            </form>
+        </section>
+
+        <article class="apod-entry">
+            <figure class="apod-media">
+                <!-- Imagem xadrez de placeholder conforme o design -->
+                <img src="placeholder-image.png" alt="Fotografia astronômica: A Nebulosa da Hélice">
+            </figure>
+            
+            <h3 class="apod-title">A Nebulosa da Hélice</h3>
+            
+            <ul class="apod-metadata" aria-label="Detalhes da imagem">
+                <li class="metadata-item">
+                    <i class="icon-calendar" aria-hidden="true"></i>
+                    <time datetime="2023-01-01">2023-01-01</time>
+                </li>
+                <li class="metadata-item">
+                    <i class="icon-copyright" aria-hidden="true"></i>
+                    <span>NASA, ESA</span>
+                </li>
+            </ul>
+            
+            <p class="apod-description">
+                A Nebulosa da Hélice é uma das nebulosas planetárias mais próximas da Terra, a cerca de 650 anos-luz, e mostra o destino provável do nosso Sol: uma estrela que ejeta suas camadas externas e deixa para trás uma anã branca.
+            </p>
+            
+            <footer class="apod-footer">
+                <p class="api-quota">
+                    <i class="icon-layers" aria-hidden="true"></i>
+                    Consultas restantes: <strong>47</strong>
+                </p>
+                <nav class="apod-links" aria-label="Links externos da imagem">
+                    <a href="#" class="link-hd">Link HD</a>
+                    <a href="#" class="link-credit">Crédito</a>
+                </nav>
+            </footer>
+        </article>
+
+        <aside class="alert-message error" role="alert">
+            <i class="icon-warning" aria-hidden="true"></i>
+            <hgroup class="alert-text">
+                <h4>Erro</h4>
+                <p>Não foi possível buscar a foto. Verifique a data, sua conexão ou tente novamente mais tarde.</p>
+            </hgroup>
+        </aside>
+        
+        <nav class="pagination-controls" aria-label="Navegação de fotos">
+            <button type="button" class="btn-prev">
+                <i class="icon-arrow-left" aria-hidden="true"></i> Anterior
+            </button>
+            <button type="button" class="btn-random">
+                <i class="icon-shuffle" aria-hidden="true"></i> Aleatória
+            </button>
+            <button type="button" class="btn-next">
+                Próximo <i class="icon-arrow-right" aria-hidden="true"></i>
+            </button>
+        </nav>
+    </main>
+</body>
+</html>
