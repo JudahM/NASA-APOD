@@ -31,26 +31,36 @@
         <section class="search-section">
             <form id="date-search-form" role="search">
                 <fieldset class="search-fieldset">
-                    <legend>Selecionar data</legend>
+                    <legend class="sr-only">Buscar foto por data</legend>
+                    <label for="apod-date">Selecionar data</label>
                     
-                    <i class="icon-calendar" aria-hidden="true"></i>
-                    <input type="date" name="apod-date" value="2023-01-01" required aria-label="Data da foto">
+                    <div class="date-control">
+                        <i class="icon-calendar" aria-hidden="true"></i>
+                        <input type="date" id="apod-date" name="apod-date" required aria-describedby="date-help">
+                    </div>
                     
                     <button type="submit" class="btn-search">
                         <i class="icon-search" aria-hidden="true"></i> 
                         Buscar
                     </button>
                     
-                    <small class="helper-text">De 1995-06-16 até hoje.</small>
+                    <small id="date-help" class="helper-text">De 1995-06-16 até hoje.</small>
                 </fieldset>
             </form>
         </section>
 
         <article class="apod-entry">
-            <figure class="apod-media">
-                <!-- Imagem xadrez de placeholder conforme o design -->
-                <img src="placeholder-image.png" alt="Fotografia astronômica: A Nebulosa da Hélice">
-            </figure>
+            <div class="media-panel">
+                <figure class="apod-media" aria-label="Mídia astronômica"></figure>
+                <div class="media-status" role="status" hidden>
+                    <h3>Buscando a foto...</h3>
+                    <p>Consultando a NASA APOD, aguarde alguns instantes.</p>
+                    <button type="button" class="btn-retry" hidden>
+                        <i class="icon-redo" aria-hidden="true"></i>
+                        Tentar novamente
+                    </button>
+                </div>
+            </div>
             
             <h3 class="apod-title">A Nebulosa da Hélice</h3>
             
@@ -72,7 +82,7 @@
             <footer class="apod-footer">
                 <p class="api-quota">
                     <i class="icon-layers" aria-hidden="true"></i>
-                    Consultas restantes: <strong>47</strong>
+                    Consultas restantes: <strong>—</strong>
                 </p>
                 <nav class="apod-links" aria-label="Links externos da imagem">
                     <a href="#" class="link-hd">Link HD</a>
@@ -81,7 +91,7 @@
             </footer>
         </article>
 
-        <aside class="alert-message error" role="alert">
+        <aside class="alert-message error" role="alert" hidden>
             <i class="icon-warning" aria-hidden="true"></i>
             <hgroup class="alert-text">
                 <h4>Erro</h4>

@@ -9,6 +9,13 @@ const dateEl = document.querySelector('time');
 const mediaContainer = document.querySelector('.apod-media');
 const alertMessage = document.querySelector('.alert-message');
 const submitBtn = document.querySelector('.btn-search');
+const mediaStatus = document.querySelector('.media-status');
+const retryBtn = document.querySelector('.btn-retry');
+const prevBtn = document.querySelector('.btn-prev');
+const nextBtn = document.querySelector('.btn-next');
+const randomBtn = document.querySelector('.btn-random');
+let lastRequestedDate = '';
+retryBtn.addEventListener('click', () => fetchApod(lastRequestedDate));
 
 
 const quotaEl = document.querySelector('.api-quota');
@@ -17,7 +24,34 @@ const copyrightItem = document.querySelectorAll('.metadata-item')[1];
 
 const today = new Date().toISOString().split('T')[0];
 dateInput.max = today;
+dateInput.value = today;
 dateInput.min = "1995-06-16";
+let currentDate = today;
+const dayInMilliseconds = 24 * 60 * 60 * 1000;
+
+// A navegação parte da foto exibida, mesmo que o campo de data seja editado.
+prevBtn.addEventListener('click', () => changeDay(-1));
+nextBtn.addEventListener('click', () => changeDay(1));
+randomBtn.addEventListener('click', () => {
+    const firstDay = Date.parse(`${dateInput.min}T00:00:00Z`);
+    const lastDay = Date.parse(`${today}T00:00:00Z`);
+    const totalDays = Math.floor((lastDay - firstDay) / dayInMilliseconds) + 1;
+    const randomDay = Math.floor(Math.random() * totalDays);
+    const date = new Date(firstDay + randomDay * dayInMilliseconds);
+
+    fetchApod(date.toISOString().split('T')[0]);
+});
+
+function changeDay(offset) {
+    // UTC evita que mudanças de fuso ou horário de verão pulem um dia.
+    const date = new Date(`${currentDate}T00:00:00Z`);
+    date.setUTCDate(date.getUTCDate() + offset);
+    const selectedDate = date.toISOString().split('T')[0];
+
+    if (selectedDate < dateInput.min || selectedDate > today) return;
+
+    fetchApod(selectedDate);
+}
 
 searchForm.addEventListener('submit', (event) => {
     event.preventDefault(); 
@@ -25,6 +59,7 @@ searchForm.addEventListener('submit', (event) => {
 });
 
 async function fetchApod(date = '') {
+    lastRequestedDate = date;
     try {
         setLoadingState(true);
 
@@ -56,6 +91,10 @@ async function fetchApod(date = '') {
 }
 
 function renderData(data) {
+    currentDate = data.date;
+    dateInput.value = data.date;
+    mediaStatus.hidden = true;
+    alertMessage.hidden = true;
     alertMessage.style.display = 'none'; 
     titleEl.textContent = data.title;
     descriptionEl.textContent = data.explanation;
@@ -95,13 +134,29 @@ function renderData(data) {
 }
 
 function showError(message) {
+    alertMessage.hidden = false;
+    mediaStatus.hidden = false;
+    mediaStatus.querySelector('h3').textContent = 'Não foi possível buscar a foto';
+    mediaStatus.querySelector('p').textContent = 'Tente novamente em alguns instantes.';
+    retryBtn.hidden = false;
     alertMessage.style.display = 'flex';
     alertMessage.querySelector('p').textContent = message;
 }
 
 function setLoadingState(isLoading) {
+    document.querySelector('.media-panel').setAttribute('aria-busy', String(isLoading));
+    retryBtn.disabled = isLoading;
     submitBtn.disabled = isLoading;
+    prevBtn.disabled = isLoading || currentDate <= dateInput.min;
+    nextBtn.disabled = isLoading || currentDate >= today;
+    randomBtn.disabled = isLoading;
+    dateInput.disabled = isLoading;
     if (isLoading) {
+        alertMessage.hidden = true;
+        mediaStatus.hidden = false;
+        mediaStatus.querySelector('h3').textContent = 'Buscando a foto...';
+        mediaStatus.querySelector('p').textContent = 'Consultando a NASA APOD, aguarde alguns instantes.';
+        retryBtn.hidden = true;
         alertMessage.style.display = 'none';
         submitBtn.innerHTML = '<i class="icon-search"></i> Carregando...';
     } else {
