@@ -29,7 +29,6 @@ dateInput.min = "1995-06-16";
 let currentDate = today;
 const dayInMilliseconds = 24 * 60 * 60 * 1000;
 
-// A navegação parte da foto exibida, mesmo que o campo de data seja editado.
 prevBtn.addEventListener('click', () => changeDay(-1));
 nextBtn.addEventListener('click', () => changeDay(1));
 randomBtn.addEventListener('click', () => {
@@ -43,7 +42,7 @@ randomBtn.addEventListener('click', () => {
 });
 
 function changeDay(offset) {
-    // UTC evita que mudanças de fuso ou horário de verão pulem um dia.
+    // modelo UTC
     const date = new Date(`${currentDate}T00:00:00Z`);
     date.setUTCDate(date.getUTCDate() + offset);
     const selectedDate = date.toISOString().split('T')[0];
@@ -81,6 +80,20 @@ async function fetchApod(date = '') {
         }
 
         const data = await response.json();
+
+        // Se a API antiga devolver a logo, buscar a foto no novo serviço da NASA
+        if (data.hdurl && data.hdurl.includes('nasa-logo')) {
+            const dateCode = data.date.replaceAll('-', '').slice(2);
+            const photoResponse = await fetch(`https://science.nasa.gov/wp-json/wp/v2/apod-basic/${dateCode}`);
+            if (!photoResponse.ok) throw new Error('Não foi possível buscar a foto. Tente novamente.');
+
+            const photoData = await photoResponse.json();
+            if (!photoData.hdurl || photoData.hdurl.includes('nasa-logo')) {
+                throw new Error('Imagem indisponível para esta data.');
+            }
+            data.hdurl = photoData.hdurl;
+        }
+
         renderData(data);
 
     } catch (error) {
